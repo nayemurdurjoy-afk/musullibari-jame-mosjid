@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুসুল্লীবাড়ি জামে মসজিদ - ম্যানেজমেন্ট সিস্টেম</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        amber: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Kalpurush', 'SolaimanLipi', 'Hind Siliguri', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for Bengali -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .islamic-pattern {
+            background-color: #064e3b;
+            background-image: radial-gradient(#059669 0.75px, transparent 0.75px), radial-gradient(#059669 0.75px, #064e3b 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-emerald-900 text-amber-400 py-1.5 px-4 text-center text-sm font-medium border-b border-emerald-800 no-print flex justify-between items-center max-w-7xl mx-auto w-full">
+        <span><i class="fas fa-mosque mr-2"></i>আস-সালাতু খাইরুম মিনান নাওম | মুসুল্লীবাড়ি জামে মসজিদ পোর্টাল</span>
+        <div class="flex items-center gap-3">
+            <button id="admin-toggle-btn" onclick="toggleAdminMode()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-3 py-0.5 rounded-full text-xs transition-colors flex items-center gap-1">
+                <i class="fas fa-lock" id="admin-icon"></i> <span id="admin-btn-text">অ্যাডমিন মোড অন করুন</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="bg-emerald-800 text-white shadow-md sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Mosque Logo & Name -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-emerald-950 text-2xl font-extrabold border-2 border-amber-300 shadow">
+                        <i class="fas fa-kaaba"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight leading-none text-amber-300">মুসুল্লীবাড়ি জামে মসজিদ</h1>
+                        <p class="text-xs text-emerald-200 mt-1">কমিটি, জমি, অর্থ ও মুসুল্লি ব্যবস্থাপনা বিভাগ</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-semibold">
+                    <button onclick="switchTab('home')" id="tab-home" class="nav-tab px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors bg-emerald-900 text-amber-300"><i class="fas fa-home mr-1.5"></i>হোম</button>
+                    <button onclick="switchTab('committee')" id="tab-committee" class="nav-tab px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"><i class="fas fa-users-cog mr-1.5"></i>কমিটি</button>
+                    <button onclick="switchTab('land')" id="tab-land" class="nav-tab px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"><i class="fas fa-map-marked-alt mr-1.5"></i>দানকৃত জমি</button>
+                    <button onclick="switchTab('finance')" id="tab-finance" class="nav-tab px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"><i class="fas fa-calculator mr-1.5"></i>আর্থিক হিসাব</button>
+                    <button onclick="switchTab('musulli')" id="tab-musulli" class="nav-tab px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"><i class="fas fa-user-friends mr-1.5"></i>মুসুল্লি তালিকা</button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-emerald-100 hover:bg-emerald-700 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-emerald-900 border-t border-emerald-700 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home')" class="block w-full text-left px-3 py-2 rounded-md font-medium text-amber-300 hover:bg-emerald-800"><i class="fas fa-home mr-2"></i>হোম</button>
+            <button onclick="switchTab('committee')" class="block w-full text-left px-3 py-2 rounded-md font-medium hover:bg-emerald-800"><i class="fas fa-users-cog mr-2"></i>কমিটি</button>
+            <button onclick="switchTab('land')" class="block w-full text-left px-3 py-2 rounded-md font-medium hover:bg-emerald-800"><i class="fas fa-map-marked-alt mr-2"></i>দানকৃত জমি</button>
+            <button onclick="switchTab('finance')" class="block w-full text-left px-3 py-2 rounded-md font-medium hover:bg-emerald-800"><i class="fas fa-calculator mr-2"></i>আর্থিক হিসাব</button>
+            <button onclick="switchTab('musulli')" class="block w-full text-left px-3 py-2 rounded-md font-medium hover:bg-emerald-800"><i class="fas fa-user-friends mr-2"></i>মুসুল্লি তালিকা</button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Wrapper -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ==================== HOME SECTION ==================== -->
+        <section id="section-home" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="islamic-pattern rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl border border-emerald-700">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="px-3 py-1 bg-amber-500 text-emerald-950 font-bold rounded-full text-xs uppercase tracking-wider">বিসমিল্লাহির রহমানির রহিম</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-amber-300 mt-4 leading-tight">মুসুল্লীবাড়ি জামে মসজিদ পোর্টাল</h2>
+                    <p class="mt-4 text-emerald-100 text-base sm:text-lg leading-relaxed">
+                        মসজিদের যাবতীয় তথ্য, কমিটি সদস্যবৃন্দ, জমি সংক্রান্ত হিসেব, দানপত্র, নির্মাণ তহবিল এবং সকল প্রকার আর্থিক আয়-ব্যয়ের স্বচ্ছ তালিকা।
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-4 no-print">
+                        <button onclick="switchTab('finance')" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-wallet"></i> আর্থিক হিসেব দেখুন
+                        </button>
+                        <button onclick="window.print()" class="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-xl shadow transition-all flex items-center gap-2">
+                            <i class="fas fa-print"></i> রিপোর্ট প্রিন্ট করুন
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute right-[-20px] bottom-[-20px] opacity-10 text-9xl text-white pointer-events-none">
+                    <i class="fas fa-mosque"></i>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Stat 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500">মোট দানকৃত জমি</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-land">০ শতক</h3>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl font-bold">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500">বর্তমান নেট তহবিল</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-fund">৳ ০</h3>
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500">মোট নিবন্ধিত মুসুল্লি</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-musulli">০ জন</h3>
+                    </div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl font-bold">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500">কমিটি সদস্য সংখ্যা</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800" id="stat-committee">০ জন</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mosque Quick Info Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Notice / Message -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-emerald-800 border-b pb-3 mb-4 flex items-center gap-2">
+                        <i class="fas fa-bullhorn text-amber-500"></i> জরুরি বিজ্ঞপ্তি ও গুরুত্বপূর্ণ বার্তা
+                    </h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-emerald-600 mt-1"></i>
+                            <span>মসজিদের নতুন অজুখানা ও সম্প্রসারণ কাজের জন্য বিশেষ দান তহবিলে অনুদান আহ্বান করা হচ্ছে।</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-emerald-600 mt-1"></i>
+                            <span>প্রতি মাসের ১ম শুক্রবারে কমিটির সাধারণ সভা অনুষ্ঠিত হয়।</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check-circle text-emerald-600 mt-1"></i>
+                            <span>ইমাম ও মুয়াজ্জিন সাহেবের মাসিক বেতন প্রতি মাসের ১০ তারিখের মধ্যে পরিশোধ করা হয়।</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Prayer Times Mock -->
+                <div class="bg-emerald-900 text-white p-6 rounded-2xl shadow-sm border border-emerald-800">
+                    <h3 class="text-lg font-bold text-amber-300 border-b border-emerald-700 pb-3 mb-4 flex items-center gap-2">
+                        <i class="far fa-clock"></i> নামাজের সময়সূচী (দৈনন্দিন)
+                    </h3>
+                    <div class="grid grid-cols-5 gap-2 text-center text-xs sm:text-sm">
+                        <div class="bg-emerald-800/80 p-3 rounded-xl border border-emerald-700">
+                            <p class="font-bold text-amber-400">ফজর</p>
+                            <p class="mt-1">৫:১০ মি.</p>
+                        </div>
+                        <div class="bg-emerald-800/80 p-3 rounded-xl border border-emerald-700">
+                            <p class="font-bold text-amber-400">জোহর</p>
+                            <p class="mt-1">১:১৫ মি.</p>
+                        </div>
+                        <div class="bg-emerald-800/80 p-3 rounded-xl border border-emerald-700">
+                            <p class="font-bold text-amber-400">আসর</p>
+                            <p class="mt-1">৪:১৫ মি.</p>
+                        </div>
+                        <div class="bg-emerald-800/80 p-3 rounded-xl border border-emerald-700">
+                            <p class="font-bold text-amber-400">মাগরিব</p>
+                            <p class="mt-1">৫:৫০ মি.</p>
+                        </div>
+                        <div class="bg-emerald-800/80 p-3 rounded-xl border border-emerald-700">
+                            <p class="font-bold text-amber-400">ইশা</p>
+                            <p class="mt-1">৭:১৫ মি.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== COMMITTEE SECTION ==================== -->
+        <section id="section-committee" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-emerald-900">মসজিদ পরিচালনার কমিটি তালিকা</h2>
+                    <p class="text-sm text-slate-500">পরিচালনা কমিটির বর্তমান সম্মানিত সকল দায়িত্বশীল সদস্যবৃন্দের তালিকা</p>
+                </div>
+                <button onclick="openModal('modal-committee')" class="admin-only hidden px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm shadow flex items-center gap-2 self-start sm:self-auto">
+                    <i class="fas fa-plus"></i> নতুন সদস্য যোগ করুন
+                </button>
+            </div>
+
+            <!-- Committee Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-emerald-50 text-emerald-900 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">ক্রমিক</th>
+                                <th class="p-4">নাম</th>
+                                <th class="p-4">পদবী</th>
+                                <th class="p-4">মোবাইল নম্বর</th>
+                                <th class="p-4">ঠিকানা</th>
+                                <th class="p-4 text-center admin-only hidden">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="committee-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== LAND RECORDS SECTION ==================== -->
+        <section id="section-land" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-emerald-900">দানকৃত জমির তথ্য ও খতিয়ান</h2>
+                    <p class="text-sm text-slate-500">মসজিদের নামে ওয়াকফকৃত/দানকৃত জমির দলিল ও পরিমাণ সংক্রান্ত রেকর্ড</p>
+                </div>
+                <button onclick="openModal('modal-land')" class="admin-only hidden px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm shadow flex items-center gap-2 self-start sm:self-auto">
+                    <i class="fas fa-plus"></i> নতুন জমির তথ্য যোগ করুন
+                </button>
+            </div>
+
+            <!-- Land Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-emerald-50 text-emerald-900 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">ক্রমিক</th>
+                                <th class="p-4">দাতার নাম</th>
+                                <th class="p-4">জমির পরিমাণ</th>
+                                <th class="p-4">দাগ / খতিয়ান নং</th>
+                                <th class="p-4">দানের তারিখ</th>
+                                <th class="p-4">বিবরণ / অবস্থান</th>
+                                <th class="p-4 text-center admin-only hidden">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="land-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FINANCIAL ACCOUNTS SECTION ==================== -->
+        <section id="section-finance" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-emerald-900">মসজিদের হিসাব-নিকাশ ও ফান্ড ম্যানেজমেন্ট</h2>
+                    <p class="text-sm text-slate-500">সাধারণ আয়-ব্যয়, নির্মাণ ফান্ড এবং ইমাম-মুয়াজ্জিনের বেতন ট্র্যাক ব্যবস্থা</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('modal-finance')" class="admin-only hidden px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm shadow flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> লেনদেন এন্ট্রি দিন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-emerald-200 shadow-sm text-center">
+                    <p class="text-xs font-bold uppercase text-emerald-600 tracking-wider">সর্বমোট জমা (আয়/দান)</p>
+                    <h3 class="text-3xl font-black text-emerald-700 mt-2" id="finance-total-income">৳ ০</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-rose-200 shadow-sm text-center">
+                    <p class="text-xs font-bold uppercase text-rose-600 tracking-wider">সর্বমোট খরচ (ব্যয়/বেতন)</p>
+                    <h3 class="text-3xl font-black text-rose-600 mt-2" id="finance-total-expense">৳ ০</h3>
+                </div>
+                <div class="bg-emerald-900 p-6 rounded-2xl border border-emerald-800 shadow-sm text-center text-white">
+                    <p class="text-xs font-bold uppercase text-amber-400 tracking-wider">অবশিষ্ট নেট স্থিতি</p>
+                    <h3 class="text-3xl font-black text-amber-300 mt-2" id="finance-net-balance">৳ ০</h3>
+                </div>
+            </div>
+
+            <!-- Finance Sub-Categories Navigation -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+                <button onclick="filterFinance('all')" class="fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-emerald-800 text-white" id="fin-all">সকল লেনদেন</button>
+                <button onclick="filterFinance('general')" class="fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-slate-200 text-slate-700" id="fin-general">সাধারণ আয়-ব্যয়</button>
+                <button onclick="filterFinance('construction')" class="fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-slate-200 text-slate-700" id="fin-construction">নির্মাণ ও উন্নয়ন ফান্ড</button>
+                <button onclick="filterFinance('salary')" class="fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-slate-200 text-slate-700" id="fin-salary">ইমাম/মুয়াজ্জিন বেতন</button>
+                <button onclick="filterFinance('donation')" class="fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-slate-200 text-slate-700" id="fin-donation">দান ও চাঁদা সংগ্রহ</button>
+            </div>
+
+            <!-- Finance Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-emerald-50 text-emerald-900 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">তারিখ</th>
+                                <th class="p-4">খাত / বিভাগ</th>
+                                <th class="p-4">বিবরণ</th>
+                                <th class="p-4">ধরন (ইনকাম/আউট)</th>
+                                <th class="p-4 text-right">টাকার পরিমাণ</th>
+                                <th class="p-4 text-center admin-only hidden">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finance-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== MUSULLI DIRECTORY SECTION ==================== -->
+        <section id="section-musulli" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-emerald-900">এলাকার সম্মানিত মুসুল্লি তালিকা</h2>
+                    <p class="text-sm text-slate-500">মহল্লাবাসী ও স্থানীয় নিয়মিত মুসুল্লিদের নির্দেশিকা ও তথ্যপঞ্জি</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <input type="text" id="musulli-search" oninput="renderMusulli()" placeholder="মুসুল্লি খুঁজুন..." class="pl-9 pr-4 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none w-48 sm:w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
+                    </div>
+                    <button onclick="openModal('modal-musulli')" class="admin-only hidden px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm shadow flex items-center gap-2">
+                        <i class="fas fa-user-plus"></i> নতুন মুসুল্লি যোগ করুন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Musulli Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-emerald-50 text-emerald-900 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">ক্রমিক</th>
+                                <th class="p-4">মুসুল্লির নাম</th>
+                                <th class="p-4">বাড়ি / ঠিকানা</th>
+                                <th class="p-4">মোবাইল নম্বর</th>
+                                <th class="p-4">মাসিক চাঁদা স্ট্যাটাস</th>
+                                <th class="p-4 text-center admin-only hidden">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="musulli-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-emerald-950 text-emerald-200 py-8 border-t border-emerald-900 mt-12 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-sm font-semibold text-amber-400">মুসুল্লীবাড়ি জামে মসজিদ পরিচালনা কমিটি</p>
+            <p class="text-xs text-emerald-400">সর্বস্বত্ব সংরক্ষিত © <span id="current-year"></span> | ডিজিটাল ব্যবস্থাপনা পোটাল</p>
+        </div>
+    </footer>
+
+    <!-- ==================== MODALS FOR ADMIN DATA ENTRY ==================== -->
+
+    <!-- Committee Member Modal -->
+    <div id="modal-committee" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-3 mb-4" id="modal-committee-title">নতুন কমিটি সদস্য যোগ করুন</h3>
+            <form id="form-committee" onsubmit="saveCommittee(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="committee-id">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">সদস্যের নাম</label>
+                    <input type="text" id="committee-name" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">পদবী</label>
+                    <select id="committee-role" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="সভাপতি">সভাপতি</option>
+                        <option value="সহ-সভাপতি">সহ-সভাপতি</option>
+                        <option value="সাধারণ সম্পাদক">সাধারণ সম্পাদক</option>
+                        <option value="যুগ্ম সাধারণ সম্পাদক">যুগ্ম সাধারণ সম্পাদক</option>
+                        <option value="ক্যাশিয়ার/কোষাধ্যক্ষ">ক্যাশিয়ার/কোষাধ্যক্ষ</option>
+                        <option value="উপ-কোষাধ্যক্ষ">উপ-কোষাধ্যক্ষ</option>
+                        <option value="কার্যনির্বাহী সদস্য">কার্যনির্বাহী সদস্য</option>
+                        <option value="উপদেষ্টা">উপদেষ্টা</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর</label>
+                    <input type="text" id="committee-phone" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ঠিকানা / বাড়ি</label>
+                    <input type="text" id="committee-address" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-committee')" class="px-4 py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg">বাতিল</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-700 text-white font-semibold rounded-lg shadow">সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Land Record Modal -->
+    <div id="modal-land" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-3 mb-4" id="modal-land-title">নতুন জমির তথ্য যোগ করুন</h3>
+            <form id="form-land" onsubmit="saveLand(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="land-id">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">দাতার নাম</label>
+                    <input type="text" id="land-donor" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">জমির পরিমাণ (সংখ্যায় শতক)</label>
+                    <input type="number" step="0.01" id="land-amount" required placeholder="যেমন: 5.5" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">দাগ ও খতিয়ান নম্বর</label>
+                    <input type="text" id="land-dag" required placeholder="দাগ নং ১২৩, খতিয়ান ৪৫" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">দানের তারিখ</label>
+                    <input type="date" id="land-date" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">বিবরণ / অবস্থান</label>
+                    <input type="text" id="land-details" placeholder="উত্তর পাশে অবস্থিত" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-land')" class="px-4 py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg">বাতিল</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-700 text-white font-semibold rounded-lg shadow">সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Finance Record Modal -->
+    <div id="modal-finance" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-3 mb-4" id="modal-finance-title">নতুন হিসাব এন্ট্রি দিন</h3>
+            <form id="form-finance" onsubmit="saveFinance(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="finance-id">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">লেনদেনের খাত / ক্যাটাগরি</label>
+                    <select id="finance-category" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="general">সাধারণ আয়-ব্যয়</option>
+                        <option value="construction">নির্মাণ ও উন্নয়ন তহবিল</option>
+                        <option value="salary">ইমাম/মুয়াজ্জিন বেতন</option>
+                        <option value="donation">দান ও চাঁদা সংগ্রহ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">লেনদেনের ধরন</label>
+                    <select id="finance-type" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="income">আয় / জমা (+)</option>
+                        <option value="expense">ব্যয় / খরচ (-)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">টাকার পরিমাণ (৳)</label>
+                    <input type="number" id="finance-amount" required placeholder="5000" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">তারিখ</label>
+                    <input type="date" id="finance-date" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">বিবরণ / দ্রষ্টব্য</label>
+                    <input type="text" id="finance-desc" required placeholder="জুমা কালেকশন / বিদ্যুৎ বিল / ইমাম সাহেবের বেতন" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-finance')" class="px-4 py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg">বাতিল</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-700 text-white font-semibold rounded-lg shadow">সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Musulli Directory Modal -->
+    <div id="modal-musulli" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-lg font-bold text-emerald-900 border-b pb-3 mb-4" id="modal-musulli-title">নতুন মুসুল্লি অন্তর্ভুক্ত করুন</h3>
+            <form id="form-musulli" onsubmit="saveMusulli(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="musulli-id">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">মুসুল্লির পূর্ণ নাম</label>
+                    <input type="text" id="musulli-name" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">বাড়ি / ঠিকানা</label>
+                    <input type="text" id="musulli-address" required placeholder="পশ্চিম পাড়া, হাজী বাড়ি" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">মোবাইল নম্বর</label>
+                    <input type="text" id="musulli-phone" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">নিয়মিত চাঁদা স্ট্যাটাস</label>
+                    <select id="musulli-status" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="পরিশোধিত">পরিশোধিত</option>
+                        <option value="বকেয়া আছে">বকেয়া আছে</option>
+                        <option value="সাধারণ দানকারী">সাধারণ দানকারী</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-4 border-t">
+                    <button type="button" onclick="closeModal('modal-musulli')" class="px-4 py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg">বাতিল</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-700 text-white font-semibold rounded-lg shadow">সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // Set dynamic current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Global State Variables
+        let isAdminMode = false;
+        let activeFinanceFilter = 'all';
+
+        // Initial Demo Data Setup for LocalStorage
+        const defaultCommittee = [
+            { id: 1, name: 'হাজী মোহাম্মদ আব্দুর রহমান', role: 'সভাপতি', phone: '০১৭১১-১১২২২৩', address: 'উত্তর মুসুল্লীবাড়ি' },
+            { id: 2, name: 'জনাব রফিকুল ইসলাম', role: 'সাধারণ সম্পাদক', phone: '০১৮১২-৩৪৫৬৭৮', address: 'দক্ষিণ পাড়া' },
+            { id: 3, name: 'হাজী মোঃ সাইফুল ইসলাম', role: 'ক্যাশিয়ার/কোষাধ্যক্ষ', phone: '০১৯১১-৯৮৭৬৫৪', address: 'পূর্ব পাড়া' }
+        ];
+
+        const defaultLand = [
+            { id: 1, donor: 'মরহুম আব্দুল গফুর হাজী', amount: 12.5, dag: 'দাগ নং ৪৫০, খতিয়ান ১২', date: '2010-05-15', details: 'মূল মসজিদ ভূমি' },
+            { id: 2, donor: 'হাজী মোহাম্মদ উল্লাহ', amount: 4.0, dag: 'দাগ নং ৪৫২, খতিয়ান ১২', date: '2018-11-20', details: 'অজুখানা ও কবরস্থান সংলগ্ন' }
+        ];
+
+        const defaultFinance = [
+            { id: 1, category: 'donation', type: 'income', amount: 25000, date: '2026-11-01', desc: 'জুমা ফান্ড কালেকশন' },
+            { id: 2, category: 'salary', type: 'expense', amount: 12000, date: '2026-11-05', desc: 'ইমাম সাহেবের মাসিক বেতন' },
+            { id: 3, category: 'salary', type: 'expense', amount: 8000, date: '2026-11-05', desc: 'মুয়াজ্জিন সাহেবের মাসিক বেতন' },
+            { id: 4, category: 'construction', type: 'income', amount: 50000, date: '2026-11-07', desc: 'অজুখানা সংস্কারের বিশেষ অনুদান' }
+        ];
+
+        const defaultMusulli = [
+            { id: 1, name: 'আলহাজ্ব মোঃ আমজাদ হোসেন', address: 'হাজী বাড়ি', phone: '০১৭০০-০০০১১১', status: 'পরিশোধিত' },
+            { id: 2, name: 'মোঃ কবির আহমেদ', address: 'মধ্য পাড়া', phone: '০১৮০০-২২২২৩৩', status: 'বকেয়া আছে' }
+        ];
+
+        // Data Management Helpers
+        function getData(key, fallback) {
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : fallback;
+        }
+
+        function saveData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // Initialize Store
+        let committeeData = getData('mb_committee', defaultCommittee);
+        let landData = getData('mb_land', defaultLand);
+        let financeData = getData('mb_finance', defaultFinance);
+        let musulliData = getData('mb_musulli', defaultMusulli);
+
+        // Tab Navigation Logic
+        function switchTab(tabName) {
+            const sections = ['home', 'committee', 'land', 'finance', 'musulli'];
+            sections.forEach(sec => {
+                document.getElementById(`section-${sec}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${sec}`);
+                if (btn) {
+                    btn.classList.remove('bg-emerald-900', 'text-amber-300');
+                }
+            });
+
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-emerald-900', 'text-amber-300');
+            }
+
+            // Mobile menu close on click
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Admin Mode Toggle Functionality
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const adminElements = document.querySelectorAll('.admin-only');
+            const btnText = document.getElementById('admin-btn-text');
+            const adminIcon = document.getElementById('admin-icon');
+            const toggleBtn = document.getElementById('admin-toggle-btn');
+
+            if (isAdminMode) {
+                adminElements.forEach(el => el.classList.remove('hidden'));
+                btnText.textContent = 'অ্যাডমিন মোড বন্ধ করুন';
+                adminIcon.className = 'fas fa-unlock';
+                toggleBtn.className = 'bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-0.5 rounded-full text-xs transition-colors flex items-center gap-1';
+            } else {
+                adminElements.forEach(el => el.classList.add('hidden'));
+                btnText.textContent = 'অ্যাডমিন মোড অন করুন';
+                adminIcon.className = 'fas fa-lock';
+                toggleBtn.className = 'bg-amber-500 hover:bg-amber-600 text-emerald-950 font-bold px-3 py-0.5 rounded-full text-xs transition-colors flex items-center gap-1';
+            }
+            renderAll();
+        }
+
+        // Mobile Nav Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Modal Helpers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Render Dashboard Statistics
+        function renderStats() {
+            // Land Sum
+            const totalLand = landData.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            document.getElementById('stat-land').textContent = `${totalLand.toFixed(2)} শতক`;
+
+            // Net Fund
+            const totalIncome = financeData.filter(f => f.type === 'income').reduce((sum, f) => sum + Number(f.amount), 0);
+            document.getElementById('finance-total-income').textContent = `৳ ${totalIncome.toLocaleString('bn-BD')}`;
+
+            const totalExpense = financeData.filter(f => f.type === 'expense').reduce((sum, f) => sum + Number(f.amount), 0);
+            document.getElementById('finance-total-expense').textContent = `৳ ${totalExpense.toLocaleString('bn-BD')}`;
+
+            const netBalance = totalIncome - totalExpense;
+            document.getElementById('finance-net-balance').textContent = `৳ ${netBalance.toLocaleString('bn-BD')}`;
+            document.getElementById('stat-fund').textContent = `৳ ${netBalance.toLocaleString('bn-BD')}`;
+
+            // Counts
+            document.getElementById('stat-musulli').textContent = `${musulliData.length} জন`;
+            document.getElementById('stat-committee').textContent = `${committeeData.length} জন`;
+        }
+
+        // Render Committee Table
+        function renderCommittee() {
+            const tbody = document.getElementById('committee-table-body');
+            tbody.innerHTML = '';
+            committeeData.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-emerald-800">${idx + 1}</td>
+                    <td class="p-4 font-semibold">${item.name}</td>
+                    <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${item.role}</span></td>
+                    <td class="p-4">${item.phone}</td>
+                    <td class="p-4 text-slate-500">${item.address || '-'}</td>
+                    <td class="p-4 text-center admin-only ${isAdminMode ? '' : 'hidden'}">
+                        <button onclick="editCommittee(${item.id})" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteCommittee(${item.id})" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveCommittee(e) {
+            e.preventDefault();
+            const id = document.getElementById('committee-id').value;
+            const name = document.getElementById('committee-name').value;
+            const role = document.getElementById('committee-role').value;
+            const phone = document.getElementById('committee-phone').value;
+            const address = document.getElementById('committee-address').value;
+
+            if (id) {
+                committeeData = committeeData.map(c => c.id == id ? { id: Number(id), name, role, phone, address } : c);
+            } else {
+                committeeData.push({ id: Date.now(), name, role, phone, address });
+            }
+
+            saveData('mb_committee', committeeData);
+            closeModal('modal-committee');
+            document.getElementById('form-committee').reset();
+            document.getElementById('committee-id').value = '';
+            renderAll();
+        }
+
+        function editCommittee(id) {
+            const item = committeeData.find(c => c.id === id);
+            if (!item) return;
+            document.getElementById('committee-id').value = item.id;
+            document.getElementById('committee-name').value = item.name;
+            document.getElementById('committee-role').value = item.role;
+            document.getElementById('committee-phone').value = item.phone;
+            document.getElementById('committee-address').value = item.address || '';
+            document.getElementById('modal-committee-title').textContent = 'কমিটি সদস্যের তথ্য সম্পাদনা করুন';
+            openModal('modal-committee');
+        }
+
+        function deleteCommittee(id) {
+            if (confirm('আপনি কি এই সদস্যকে তালিকা থেকে মুছে ফেলতে চান?')) {
+                committeeData = committeeData.filter(c => c.id !== id);
+                saveData('mb_committee', committeeData);
+                renderAll();
+            }
+        }
+
+        // Render Land Table
+        function renderLand() {
+            const tbody = document.getElementById('land-table-body');
+            tbody.innerHTML = '';
+            landData.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-emerald-800">${idx + 1}</td>
+                    <td class="p-4 font-semibold">${item.donor}</td>
+                    <td class="p-4 font-bold text-amber-600">${item.amount} শতক</td>
+                    <td class="p-4">${item.dag}</td>
+                    <td class="p-4 text-slate-500">${item.date}</td>
+                    <td class="p-4 text-slate-500">${item.details || '-'}</td>
+                    <td class="p-4 text-center admin-only ${isAdminMode ? '' : 'hidden'}">
+                        <button onclick="editLand(${item.id})" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteLand(${item.id})" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveLand(e) {
+            e.preventDefault();
+            const id = document.getElementById('land-id').value;
+            const donor = document.getElementById('land-donor').value;
+            const amount = parseFloat(document.getElementById('land-amount').value);
+            const dag = document.getElementById('land-dag').value;
+            const date = document.getElementById('land-date').value;
+            const details = document.getElementById('land-details').value;
+
+            if (id) {
+                landData = landData.map(l => l.id == id ? { id: Number(id), donor, amount, dag, date, details } : l);
+            } else {
+                landData.push({ id: Date.now(), donor, amount, dag, date, details });
+            }
+
+            saveData('mb_land', landData);
+            closeModal('modal-land');
+            document.getElementById('form-land').reset();
+            document.getElementById('land-id').value = '';
+            renderAll();
+        }
+
+        function editLand(id) {
+            const item = landData.find(l => l.id === id);
+            if (!item) return;
+            document.getElementById('land-id').value = item.id;
+            document.getElementById('land-donor').value = item.donor;
+            document.getElementById('land-amount').value = item.amount;
+            document.getElementById('land-dag').value = item.dag;
+            document.getElementById('land-date').value = item.date;
+            document.getElementById('land-details').value = item.details || '';
+            document.getElementById('modal-land-title').textContent = 'জমির তথ্য সম্পাদনা করুন';
+            openModal('modal-land');
+        }
+
+        function deleteLand(id) {
+            if (confirm('আপনি কি এই জমির রেকর্ড মুছে ফেলতে চান?')) {
+                landData = landData.filter(l => l.id !== id);
+                saveData('mb_land', landData);
+                renderAll();
+            }
+        }
+
+        // Render Finance Table & Filters
+        function filterFinance(cat) {
+            activeFinanceFilter = cat;
+            document.querySelectorAll('.fin-tab').forEach(btn => {
+                btn.className = 'fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-slate-200 text-slate-700';
+            });
+            const activeBtn = document.getElementById(`fin-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = 'fin-tab text-xs font-bold px-4 py-2 rounded-xl bg-emerald-800 text-white';
+            }
+            renderFinance();
+        }
+
+        function getCategoryLabel(cat) {
+            switch(cat) {
+                case 'general': return 'সাধারণ আয়-ব্যয়';
+                case 'construction': return 'নির্মাণ ও উন্নয়ন';
+                case 'salary': return 'ইমাম/মুয়াজ্জিন বেতন';
+                case 'donation': return 'দান ও সংগ্রহ';
+                default: return cat;
+            }
+        }
+
+        function renderFinance() {
+            const tbody = document.getElementById('finance-table-body');
+            tbody.innerHTML = '';
+
+            let filtered = financeData;
+            if (activeFinanceFilter !== 'all') {
+                filtered = financeData.filter(f => f.category === activeFinanceFilter);
+            }
+
+            filtered.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                const isIncome = item.type === 'income';
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-500">${item.date}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700">${getCategoryLabel(item.category)}</span></td>
+                    <td class="p-4 font-semibold">${item.desc}</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${isIncome ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${isIncome ? 'জমা (+)' : 'খরচ (-)'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right font-extrabold ${isIncome ? 'text-emerald-700' : 'text-rose-600'}">
+                        ${isIncome ? '+' : '-'} ৳ ${Number(item.amount).toLocaleString('bn-BD')}
+                    </td>
+                    <td class="p-4 text-center admin-only ${isAdminMode ? '' : 'hidden'}">
+                        <button onclick="editFinance(${item.id})" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteFinance(${item.id})" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveFinance(e) {
+            e.preventDefault();
+            const id = document.getElementById('finance-id').value;
+            const category = document.getElementById('finance-category').value;
+            const type = document.getElementById('finance-type').value;
+            const amount = parseFloat(document.getElementById('finance-amount').value);
+            const date = document.getElementById('finance-date').value;
+            const desc = document.getElementById('finance-desc').value;
+
+            if (id) {
+                financeData = financeData.map(f => f.id == id ? { id: Number(id), category, type, amount, date, desc } : f);
+            } else {
+                financeData.push({ id: Date.now(), category, type, amount, date, desc });
+            }
+
+            saveData('mb_finance', financeData);
+            closeModal('modal-finance');
+            document.getElementById('form-finance').reset();
+            document.getElementById('finance-id').value = '';
+            renderAll();
+        }
+
+        function editFinance(id) {
+            const item = financeData.find(f => f.id === id);
+            if (!item) return;
+            document.getElementById('finance-id').value = item.id;
+            document.getElementById('finance-category').value = item.category;
+            document.getElementById('finance-type').value = item.type;
+            document.getElementById('finance-amount').value = item.amount;
+            document.getElementById('finance-date').value = item.date;
+            document.getElementById('finance-desc').value = item.desc;
+            document.getElementById('modal-finance-title').textContent = 'হিসাব এন্ট্রি সম্পাদনা করুন';
+            openModal('modal-finance');
+        }
+
+        function deleteFinance(id) {
+            if (confirm('আপনি কি এই হিসাবের এনট্রি মুছে ফেলতে চান?')) {
+                financeData = financeData.filter(f => f.id !== id);
+                saveData('mb_finance', financeData);
+                renderAll();
+            }
+        }
+
+        // Render Musulli Table with Live Search
+        function renderMusulli() {
+            const tbody = document.getElementById('musulli-table-body');
+            tbody.innerHTML = '';
+            const query = document.getElementById('musulli-search').value.toLowerCase();
+
+            const filtered = musulliData.filter(m => 
+                m.name.toLowerCase().includes(query) || 
+                m.address.toLowerCase().includes(query) || 
+                m.phone.includes(query)
+            );
+
+            filtered.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 border-b border-slate-100';
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-emerald-800">${idx + 1}</td>
+                    <td class="p-4 font-semibold">${item.name}</td>
+                    <td class="p-4 text-slate-600">${item.address}</td>
+                    <td class="p-4">${item.phone}</td>
+                    <td class="p-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${item.status === 'পরিশোধিত' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center admin-only ${isAdminMode ? '' : 'hidden'}">
+                        <button onclick="editMusulli(${item.id})" class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteMusulli(${item.id})" class="text-rose-600 hover:text-rose-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function saveMusulli(e) {
+            e.preventDefault();
+            const id = document.getElementById('musulli-id').value;
+            const name = document.getElementById('musulli-name').value;
+            const address = document.getElementById('musulli-address').value;
+            const phone = document.getElementById('musulli-phone').value;
+            const status = document.getElementById('musulli-status').value;
+
+            if (id) {
+                musulliData = musulliData.map(m => m.id == id ? { id: Number(id), name, address, phone, status } : m);
+            } else {
+                musulliData.push({ id: Date.now(), name, address, phone, status });
+            }
+
+            saveData('mb_musulli', musulliData);
+            closeModal('modal-musulli');
+            document.getElementById('form-musulli').reset();
+            document.getElementById('musulli-id').value = '';
+            renderAll();
+        }
+
+        function editMusulli(id) {
+            const item = musulliData.find(m => m.id === id);
+            if (!item) return;
+            document.getElementById('musulli-id').value = item.id;
+            document.getElementById('musulli-name').value = item.name;
+            document.getElementById('musulli-address').value = item.address;
+            document.getElementById('musulli-phone').value = item.phone;
+            document.getElementById('musulli-status').value = item.status;
+            document.getElementById('modal-musulli-title').textContent = 'মুসুল্লির তথ্য সম্পাদনা করুন';
+            openModal('modal-musulli');
+        }
+
+        function deleteMusulli(id) {
+            if (confirm('আপনি কি এই মুসুল্লির নাম ডিরেক্টরি থেকে মুছে ফেলতে চান?')) {
+                musulliData = musulliData.filter(m => m.id !== id);
+                saveData('mb_musulli', musulliData);
+                renderAll();
+            }
+        }
+
+        // Global Render Invocation
+        function renderAll() {
+            renderStats();
+            renderCommittee();
+            renderLand();
+            renderFinance();
+            renderMusulli();
+        }
+
+        // Initial Load
+        renderAll();
+    </script>
+</body>
+</html>
